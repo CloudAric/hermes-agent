@@ -287,7 +287,7 @@ def _deliver_result(job: dict, content: str, adapters=None, loop=None) -> Option
     if wrap_response:
         task_name = job.get("name", job["id"])
         delivery_content = (
-            f"Cronjob Response: {task_name}\n"
+            f"{task_name}\n"
             f"-------------\n\n"
             f"{content}\n\n"
             f"Note: The agent cannot see this message, and therefore cannot respond to it."

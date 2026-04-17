@@ -1582,6 +1582,32 @@ class TelegramAdapter(BasePlatformAdapter):
                 return SendResult(success=False, error=f"Image file not found: {image_path}")
 
             _thread = metadata.get("thread_id") if metadata else None
+            # Pre-process image using ImageMagick
+            try:
+                import subprocess
+                import os
+                processed_path = image_path + ".temp.jpg"
+                # 使用 convert 調整大小與轉換格式
+                subprocess.run([
+                    "convert", image_path, 
+                    "-resize", "1280x1280>", 
+                    "-colorspace", "RGB", 
+                    processed_path
+                ], check=True)
+                
+                with open(processed_path, "rb") as image_file:
+                    msg = await self._bot.send_photo(
+                        chat_id=int(chat_id),
+                        photo=image_file,
+                        caption=caption[:1024] if caption else None,
+                        reply_to_message_id=int(reply_to) if reply_to else None,
+                        message_thread_id=int(_thread) if _thread else None,
+                    )
+                os.remove(processed_path)
+                return SendResult(success=True, message_id=str(msg.message_id))
+            except Exception as inner_e:
+                logger.warning(f"Image preprocessing failed, falling back: {inner_e}")
+            
             with open(image_path, "rb") as image_file:
                 msg = await self._bot.send_photo(
                     chat_id=int(chat_id),
