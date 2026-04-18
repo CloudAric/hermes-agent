@@ -52,6 +52,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("arcee-ai/trinity-large-thinking",  ""),
     ("openai/gpt-5.4-pro",              ""),
     ("openai/gpt-5.4-nano",             ""),
+    ("openrouter/elephant-alpha",         "Elephant AI"),
 ]
 
 _openrouter_catalog_cache: list[tuple[str, str]] | None = None
