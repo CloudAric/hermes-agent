@@ -678,8 +678,8 @@ DEFAULT_CONFIG = {
     },
 
     "cron": {
-        # Wrap delivered cron responses with a header (task name) and footer
-        # ("The agent cannot see this message").  Set to false for clean output.
+        # Wrap delivered cron responses with a header (task name) only.
+        # Set to false for raw/clean output.
         "wrap_response": True,
     },
 

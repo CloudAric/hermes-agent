@@ -209,10 +209,10 @@ class TestResolveDeliveryTarget:
 
 
 class TestDeliverResultWrapping:
-    """Verify that cron deliveries are wrapped with header/footer and no longer mirrored."""
+    """Verify that cron deliveries are wrapped with a header and no disclaimer footer."""
 
-    def test_delivery_wraps_content_with_header_and_footer(self):
-        """Delivered content should include task name header and agent-invisible note."""
+    def test_delivery_wraps_content_with_header_only(self):
+        """Delivered content should include task name header without agent-invisible note."""
         from gateway.config import Platform
 
         pconfig = MagicMock()
@@ -232,10 +232,11 @@ class TestDeliverResultWrapping:
 
         send_mock.assert_called_once()
         sent_content = send_mock.call_args.kwargs.get("content") or send_mock.call_args[0][-1]
-        assert "Cronjob Response: daily-report" in sent_content
+        assert sent_content.startswith("daily-report\n-------------\n\n")
+        assert "Cronjob Response:" not in sent_content
         assert "-------------" in sent_content
         assert "Here is today's summary." in sent_content
-        assert "The agent cannot see this message" in sent_content
+        assert "The agent cannot see this message" not in sent_content
 
     def test_delivery_uses_job_id_when_no_name(self):
         """When a job has no name, the wrapper should fall back to job id."""
@@ -256,7 +257,8 @@ class TestDeliverResultWrapping:
             _deliver_result(job, "Output.")
 
         sent_content = send_mock.call_args.kwargs.get("content") or send_mock.call_args[0][-1]
-        assert "Cronjob Response: abc-123" in sent_content
+        assert sent_content.startswith("abc-123\n-------------\n\n")
+        assert "Cronjob Response:" not in sent_content
 
     def test_delivery_skips_wrapping_when_config_disabled(self):
         """When cron.wrap_response is false, deliver raw content without header/footer."""
