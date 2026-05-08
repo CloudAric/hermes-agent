@@ -15,7 +15,6 @@ import platform
 import re
 import shutil
 import subprocess
-import sys
 import tempfile
 import threading
 import time
@@ -63,6 +62,11 @@ def _termux_microphone_command() -> Optional[str]:
         return None
     return shutil.which("termux-microphone-record")
 
+
+def _termux_media_player_command() -> Optional[str]:
+    if not _is_termux_environment():
+        return None
+    return shutil.which("termux-media-player")
 
 
 def _termux_api_app_installed() -> bool:
@@ -583,7 +587,8 @@ class AudioRecorder:
         except (ImportError, OSError) as e:
             raise RuntimeError(
                 "Voice mode requires sounddevice and numpy.\n"
-                f"Install with: {sys.executable} -m pip install sounddevice numpy"
+                "Install with: pip install sounddevice numpy\n"
+                "Or: pip install hermes-agent[voice]"
             ) from e
 
         with self._lock:
