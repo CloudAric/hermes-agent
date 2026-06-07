@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-06-02T00:04:08.654018+00:00",
+  "cpu_percent": 2.5,
+  "memory_percent": 37.4,
+  "disk_percent": 63.7,
+  "load_average": [
+    0.01,
+    0.03,
+    0.0
+  ],
+  "status": "healthy",
+  "alerts": []
+}
